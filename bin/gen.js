@@ -1,13 +1,17 @@
 #!/usr/bin/env node
-// scripts/gen-sv-types-only.js
-
 const fs   = require('fs');
 const path = require('path');
 
-// 1) var ditt Sitevision-paket bor
-const svTypesRoot = path.resolve(__dirname, '../node_modules/@sitevision/api/types');
-// 2) var du vill lägga din auto-generated barrel
-const outFile     = path.resolve(__dirname, '../src/types/sitevision-api.d.ts');
+const projectRoot = process.cwd();
+const svTypesRoot = path.join(projectRoot, 'node_modules', '@sitevision', 'api', 'types');
+
+if (!fs.existsSync(svTypesRoot)) {
+  console.warn('⚠️  No @sitevision/api/types found – skipping type-barrel generation');
+  process.exit(0);
+}
+
+// Och utfilen ligger i user‐projektet under src/types
+const outFile     = path.join(projectRoot, 'src', 'types', 'sitevision-api.d.ts');
 
 // Hjälpfunktion: rekursivt hitta alla kataloger med index.d.ts
 function walkTypes(dir, rel = []) {
